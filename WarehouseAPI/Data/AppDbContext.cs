@@ -11,5 +11,6 @@ namespace WarehouseAPI.Data
         }
 
     public DbSet<Produto> Produtos { get; set; }
+    public DbSet<Fornecedor> Fornecedores { get; set; }
 }
 }

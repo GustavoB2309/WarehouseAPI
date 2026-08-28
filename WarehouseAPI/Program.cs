@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WarehouseAPI.Controllers;
 using WarehouseAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,5 +27,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGet("/", () => "A Warehouse API está rodando.");
+app.MapPost("/Abastecer", EstoqueController.AbastecerEstoque);
 
 app.Run();
