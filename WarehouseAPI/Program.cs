@@ -28,5 +28,6 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => "A Warehouse API está rodando.");
 app.MapPost("/Abastecer", EstoqueController.AbastecerEstoque);
+app.MapPost("/fornecedores/cadastrar", FornecedorController.CadastrarFornecedor);
 
 app.Run();

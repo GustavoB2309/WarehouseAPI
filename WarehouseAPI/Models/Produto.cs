@@ -12,5 +12,6 @@ namespace WarehouseAPI.Models
         public string CodigoDebarras { get; set; }
         public double Preco { get; set; }
         public int QuantidadeEmEstoque { get; set; }
+        public int FornecedorId { get; set; }
     }
 }

@@ -31,6 +31,14 @@ namespace WarehouseAPI.Controllers
             try
             {
 
+                var FornecedorExiste = banco.Fornecedores.Any(f => f.Id == dados.FornecedorId);
+
+                if (!FornecedorExiste)
+                {
+                    Console.WriteLine($"[{DateTime.Now}] ERRO: O id do fornecedor não existe no banco de dados.");
+                    return Results.BadRequest(new { mensagem = "O id do fornecedor não existe." });
+                }
+
                 if (produtoExistente == null)
                 {
                     banco.Produtos.Add(dados);
