@@ -16,7 +16,7 @@ namespace WarehouseAPI.Controllers
             }
 
             var fornecedorExiste = banco.Fornecedores.Any(c => c.CNPJ == dados.CNPJ);
-
+            
             if (fornecedorExiste)
             {
                 Console.WriteLine($"[{DateTime.Now}] ERRO: Esse fornecedor já existe (CNPJ).");
