@@ -38,5 +38,19 @@ namespace WarehouseAPI.Controllers
             }
         }
 
+        public static IResult ConsultarPorId(int id, AppDbContext banco)
+        {
+            var idFornecedor = banco.Fornecedores.FirstOrDefault(c => c.Id == id);
+
+            if (idFornecedor == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: O fornecedor não foi encontrado.");
+                return Results.NotFound(new { mensagem = "O id pode não estar correto." });
+            }
+
+                return Results.Ok(idFornecedor);
+            
+        }
+
     }
 }
