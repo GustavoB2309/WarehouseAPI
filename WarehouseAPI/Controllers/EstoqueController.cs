@@ -63,5 +63,17 @@ namespace WarehouseAPI.Controllers
                 return Results.Problem("Desculpe, o sistema está instável no momento");
             }
         }
+
+        public static IResult consultarPorFornecedor(int idFornecedor, AppDbContext banco)
+        {
+
+            var porFornecedor = banco.Produtos
+            .Where(p => p.FornecedorId == idFornecedor)
+            .ToList();
+
+            return Results.Ok(porFornecedor);
+
+        }
+
     }
 }

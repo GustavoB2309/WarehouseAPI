@@ -8,10 +8,19 @@ namespace WarehouseAPI.Controllers
 
         public static IResult CadastrarFornecedor(Fornecedor dados, AppDbContext banco)
         {
+
             if (string.IsNullOrWhiteSpace(dados.Nome))
             {
                 Console.WriteLine($"[{DateTime.Now}] ERRO: O nome do fornecedor não pode estar em branco.");
                 return Results.BadRequest(new { mensagem = "O nome do fornecedor não pode estar em branco." });
+            }
+
+            var fornecedorExiste = banco.Fornecedores.Any(c => c.CNPJ == dados.CNPJ);
+
+            if (fornecedorExiste)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Esse fornecedor já existe (CNPJ).");
+                return Results.BadRequest(new { mensagem = "O cnpj do fornecedor já está cadastrado no sistema." });
             }
 
             try 
