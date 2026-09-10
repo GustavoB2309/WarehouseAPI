@@ -33,5 +33,6 @@ app.MapGet("/produtos/por-fornecedor/{idFornecedor}", EstoqueController.consulta
 app.MapGet("/fornecedores/{id}", FornecedorController.ConsultarPorId);
 app.MapGet("/produtos", EstoqueController.listarProdutos);
 app.MapDelete("/fornecedores/{id}", FornecedorController.DeletarFornecedor);
+app.MapPut("/produtos/{id}/atualizar-preco", EstoqueController.AtualizarPreco);
 
 app.Run();

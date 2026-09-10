@@ -10,10 +10,11 @@ namespace WarehouseAPI.Models
         public int Id { get; set; }
         public string Nome { get; set; }
         public string CodigoDebarras { get; set; }
-        public double Preco { get; set; }
+        public decimal Preco { get; set; }
         public int QuantidadeEmEstoque { get; set; }
         public int FornecedorId { get; set; }
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public Fornecedor Fornecedor { get; set; } = null!;
     }
 }

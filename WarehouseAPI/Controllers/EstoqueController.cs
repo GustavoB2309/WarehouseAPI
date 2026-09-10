@@ -84,6 +84,30 @@ namespace WarehouseAPI.Controllers
 
             return Results.Ok(listarTudo);
         }
+        
+        public static IResult AtualizarPreco(int id, decimal novoPreco, AppDbContext banco)
+        {
+
+            var produtoExiste = banco.Produtos.FirstOrDefault(c => c.Id == id);
+
+            if (produtoExiste == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: O id não se refere a um produto existente.");
+                return Results.NotFound(new { mensagem = "O id não se refere a um produto existente." });
+            }
+
+            if (novoPreco <= 0)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: A mudança não pode ser pra 0 ou menos.");
+                return Results.BadRequest(new { mensagem = "A mudança não pode ser pra 0 ou menos." });
+            }
+
+            produtoExiste.Preco = novoPreco;
+            banco.SaveChanges();
+
+            return Results.Ok("Preço alterado.");
+
+        }
 
     }
 }
