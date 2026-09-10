@@ -52,5 +52,30 @@ namespace WarehouseAPI.Controllers
             
         }
 
+        public static IResult DeletarFornecedor(int id, AppDbContext banco)
+        {
+            var fornecedorDados = banco.Fornecedores.FirstOrDefault(c => c.Id == id);
+
+            if (fornecedorDados == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Verifique se o id está associado a um fornecedor no banco de dados.");
+                return Results.BadRequest(new { mensagem = "Fornecedor não encontrado" });
+            }
+
+            var fornecedorProduto = banco.Produtos.Any(p => p.FornecedorId == id);
+
+            if (fornecedorProduto)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: O fornecedor está associado a um produto.");
+                return Results.BadRequest(new { mensagem = "Id fornecedor associado a produto." });
+            }
+
+            banco.Fornecedores.Remove(fornecedorDados);
+            banco.SaveChanges();
+
+            return Results.Ok("Fornecedor excluído do banco de dados com sucesso!");
+
+        }
+
     }
 }
