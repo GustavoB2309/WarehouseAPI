@@ -31,5 +31,6 @@ app.MapPost("/Abastecer", EstoqueController.AbastecerEstoque);
 app.MapPost("/fornecedores/cadastrar", FornecedorController.CadastrarFornecedor);
 app.MapGet("/produtos/por-fornecedor/{idFornecedor}", EstoqueController.consultarPorFornecedor);
 app.MapGet("/fornecedores/{id}", FornecedorController.ConsultarPorId);
+app.MapGet("/produtos", EstoqueController.listarProdutos);
 
 app.Run();

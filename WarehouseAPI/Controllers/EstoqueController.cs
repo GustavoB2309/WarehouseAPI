@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using WarehouseAPI.Models;
 using WarehouseAPI.Data;
 using Microsoft.AspNetCore.Mvc.Formatters.Xml;
+using Microsoft.EntityFrameworkCore;
 
 namespace WarehouseAPI.Controllers
 {
@@ -73,6 +74,15 @@ namespace WarehouseAPI.Controllers
 
             return Results.Ok(porFornecedor);
 
+        }
+
+        public static IResult listarProdutos(AppDbContext banco)
+        {
+            var listarTudo = banco.Produtos
+                .Include(p => p.Fornecedor)
+                .ToList();
+
+            return Results.Ok(listarTudo);
         }
 
     }

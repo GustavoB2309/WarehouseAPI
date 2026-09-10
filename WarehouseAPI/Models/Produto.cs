@@ -13,5 +13,7 @@ namespace WarehouseAPI.Models
         public double Preco { get; set; }
         public int QuantidadeEmEstoque { get; set; }
         public int FornecedorId { get; set; }
+
+        public Fornecedor Fornecedor { get; set; } = null!;
     }
 }
