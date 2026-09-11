@@ -13,7 +13,7 @@ namespace WarehouseAPI.Controllers
 
         public static IResult AbastecerEstoque(Produto dados, AppDbContext banco)
         {
-            var ProdutoExiste = banco.Produtos.Any(p => p.Nome == dados.Nome);
+                var ProdutoExiste = banco.Produtos.Any(p => p.Nome == dados.Nome);
 
             if(string.IsNullOrWhiteSpace(dados.Nome)) 
             {
@@ -106,6 +106,36 @@ namespace WarehouseAPI.Controllers
             banco.SaveChanges();
 
             return Results.Ok("Preço alterado.");
+
+        }
+
+        public static IResult DarBaixaEstoque(int id, int quantidadeSaida, AppDbContext banco)
+        {
+            var produtoexiste = banco.Produtos.FirstOrDefault(c => c.Id == id);
+
+            if (produtoexiste == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: O produto não existe.");
+                return Results.NotFound(new { mensagem = "O produto não foi encontrado." });
+            }
+
+            if (quantidadeSaida <= 0)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: A quantidade precisa ser maior que zero.");
+                return Results.BadRequest(new { mensagem = "A quantidade precisa ser maior que zero." });
+            }
+
+            if (quantidadeSaida > produtoexiste.QuantidadeEmEstoque)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: A quantidade informada é superior a quantidade em estoque.");
+                return Results.BadRequest(new { mensagem = "A quantidade informada não pode ser superior ao estoque." });
+            }
+
+            produtoexiste.QuantidadeEmEstoque = produtoexiste.QuantidadeEmEstoque - quantidadeSaida;
+
+            banco.SaveChanges();
+
+            return Results.Ok("Estoque deu baixa (certa quantidade saiu do estoque).");
 
         }
 
