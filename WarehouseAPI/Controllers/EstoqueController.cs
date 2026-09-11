@@ -139,5 +139,29 @@ namespace WarehouseAPI.Controllers
 
         }
 
+        public static IResult DarEntradaEstoque(int id, int quantidadeEntrada, AppDbContext banco)
+        {
+            var produtoexiste = banco.Produtos.FirstOrDefault(c => c.Id == id);
+
+            if (produtoexiste == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: O id está incorreto.");
+                return Results.NotFound(new { mensagem = "Produto não encontrado." });
+            }
+
+           if (quantidadeEntrada <= 0)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: A quantidade inserida deve ser maior que zero.");
+                return Results.BadRequest(new { mensaegm = "A quantia deve ser maior que zero." });
+            }
+
+            produtoexiste.QuantidadeEmEstoque = produtoexiste.QuantidadeEmEstoque + quantidadeEntrada;
+
+            banco.SaveChanges();
+
+            return Results.Ok("Tudo certo!");
+
+        }
+
     }
 }

@@ -35,5 +35,6 @@ app.MapGet("/produtos", EstoqueController.listarProdutos);
 app.MapDelete("/fornecedores/{id}", FornecedorController.DeletarFornecedor);
 app.MapPut("/produtos/{id}/atualizar-preco", EstoqueController.AtualizarPreco);
 app.MapPut("/produtos/{id}/baixa-estoque", EstoqueController.DarBaixaEstoque);
+app.MapPut("/produtos/{id}/adicionar-estoque", EstoqueController.DarEntradaEstoque);
 
 app.Run();
