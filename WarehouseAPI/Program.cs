@@ -37,5 +37,6 @@ app.MapPut("/produtos/{id}/atualizar-preco", EstoqueController.AtualizarPreco);
 app.MapPut("/produtos/{id}/baixa-estoque", EstoqueController.DarBaixaEstoque);
 app.MapPut("/produtos/{id}/adicionar-estoque", EstoqueController.DarEntradaEstoque);
 app.MapGet("/produtos/faturamento", EstoqueController.RelatorioFaturamento);
+app.MapGet("/produtos/curva-abc", EstoqueController.RelatorioCurvaABC);
 
 app.Run();

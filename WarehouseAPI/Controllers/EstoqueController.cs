@@ -177,5 +177,29 @@ namespace WarehouseAPI.Controllers
             return Results.Ok(new {relatorio});
         }
 
+        public static IResult RelatorioCurvaABC(AppDbContext banco)
+        {
+            var produtosOrdenados = banco.Produtos
+                .Select(p => new
+                {
+                    id = p.Id,
+                    Nome = p.Nome,
+                    ValorTotalEstoque = p.QuantidadeEmEstoque * p.Preco
+                })
+                .OrderByDescending(p => p.ValorTotalEstoque)
+                .ToList();
+
+            var resultadoFinal = produtosOrdenados.Select(p => new
+            {
+                Id = p.id,
+                Nome = p.Nome,
+                Faturamento = p.ValorTotalEstoque,
+                Classe = p.ValorTotalEstoque >= 100000 ? "A" : (p.ValorTotalEstoque >= 20000 ? "B" : "C")
+
+            }).ToList();
+
+            return Results.Ok(resultadoFinal);
+        }
+
     }
 }
