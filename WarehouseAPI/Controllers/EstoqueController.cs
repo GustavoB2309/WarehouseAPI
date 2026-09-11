@@ -163,5 +163,19 @@ namespace WarehouseAPI.Controllers
 
         }
 
+        public static IResult RelatorioFaturamento(AppDbContext banco)
+        {
+            var relatorio = banco.Produtos.Select(p => new
+            {
+                Id = p.Id,
+                Nome = p.Nome,
+                Preco = p.Preco,
+                Quantidade = p.QuantidadeEmEstoque,
+                ValorTotalEstoque = p.Preco * p.QuantidadeEmEstoque
+            }).ToList();
+
+            return Results.Ok(new {relatorio});
+        }
+
     }
 }
