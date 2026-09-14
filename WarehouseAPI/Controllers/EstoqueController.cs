@@ -201,5 +201,28 @@ namespace WarehouseAPI.Controllers
             return Results.Ok(resultadoFinal);
         }
 
+        public static IResult deletarProduto(int id, AppDbContext banco)
+        {
+            var produtoexiste = banco.Produtos.FirstOrDefault(c => c.Id == id);
+
+            if (produtoexiste == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Produto não encontrado.");
+                return Results.NotFound(new { mensagem = "Produto não encontrado." });
+            }
+
+            if (produtoexiste.QuantidadeEmEstoque > 0)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: O produto tem itens no estoque, retire primeiro.");
+                return Results.BadRequest(new { mensagem = "O produto tem itens no estoque, retire primeiro." });
+            }
+
+            banco.Produtos.Remove(produtoexiste);
+
+            banco.SaveChanges();
+
+            return Results.Ok("Produto removido com sucesso.");
+        }
+
     }
 }
