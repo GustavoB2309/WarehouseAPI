@@ -41,5 +41,6 @@ app.MapGet("/produtos/curva-abc", EstoqueController.RelatorioCurvaABC);
 app.MapPut("/fornecedores/{id}/atualizar-dados", FornecedorController.AtualizarFornecedor);
 app.MapDelete("/produtos/{id}", EstoqueController.deletarProduto);
 app.MapGet("/produtos/lucro-total", EstoqueController.RelatorioLucro);
+app.MapPatch("/produtos/{id}/modificar-dados", EstoqueController.ModificarDadosProduto);
 
 app.Run();

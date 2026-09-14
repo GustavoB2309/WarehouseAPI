@@ -241,5 +241,31 @@ namespace WarehouseAPI.Controllers
 
         }
 
+        public static IResult ModificarDadosProduto(int id, Produto dadosNovos, AppDbContext banco)
+        {
+
+            var produtoexiste = banco.Produtos.FirstOrDefault(c => c.Id == id);
+
+            if (produtoexiste == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Produto não encontrado.");
+                return Results.NotFound(new { mensagem = "Produto não encontrado." });
+            }
+
+            if (dadosNovos == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Insira a informação que quer atualizar.");
+                return Results.BadRequest(new { mensagem = "Insira a informação que quer atualizar." });
+            }
+
+            produtoexiste.Nome = dadosNovos.Nome;
+            produtoexiste.CodigoDebarras = dadosNovos.CodigoDebarras;
+
+            banco.SaveChanges();
+
+            return Results.Ok("Informações alteradas.");
+
+        }
+
     }
 }
