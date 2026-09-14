@@ -224,5 +224,22 @@ namespace WarehouseAPI.Controllers
             return Results.Ok("Produto removido com sucesso.");
         }
 
+        public static IResult RelatorioLucro(AppDbContext banco)
+        {
+            var relatorio = banco.Produtos.Select(p => new
+            {
+                id = p.Id,
+                nome = p.Nome,
+                quantidade = p.QuantidadeEmEstoque,
+                preco = p.Preco,
+                precocusto = p.PrecoCusto,
+                lucrototal = (p.Preco - p.PrecoCusto) * p.QuantidadeEmEstoque
+
+            }).ToList();
+
+            return Results.Ok(relatorio);
+
+        }
+
     }
 }
