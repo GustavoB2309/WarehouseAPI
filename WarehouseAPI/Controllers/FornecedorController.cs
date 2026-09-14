@@ -77,5 +77,32 @@ namespace WarehouseAPI.Controllers
 
         }
 
+        public static IResult AtualizarFornecedor(int id, Fornecedor atualizarFornecedor, AppDbContext banco)
+        {
+
+            var fornecedorexiste = banco.Fornecedores.FirstOrDefault(c => c.Id == id);
+
+            if (fornecedorexiste == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: O fornecedor não foi encontrado.");
+                return Results.NotFound(new { mensagem = "O fornecedor não foi encontrado." });
+            }
+
+            if (atualizarFornecedor == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: As informações não foram adicionadas.");
+                return Results.NotFound(new { mensagem = "As informações não foram adicionadas." });
+            }
+
+            fornecedorexiste.Nome = atualizarFornecedor.Nome;
+            fornecedorexiste.CNPJ = atualizarFornecedor.CNPJ;
+            fornecedorexiste.Telefone = atualizarFornecedor.Telefone;
+
+            banco.SaveChanges();
+
+            return Results.Ok("Informações alteradas com sucesso.");
+
+        }
+
     }
 }
