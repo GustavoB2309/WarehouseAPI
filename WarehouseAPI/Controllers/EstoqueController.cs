@@ -5,6 +5,7 @@ using WarehouseAPI.Models;
 using WarehouseAPI.Data;
 using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace WarehouseAPI.Controllers
 {
@@ -13,15 +14,21 @@ namespace WarehouseAPI.Controllers
 
         public static IResult AbastecerEstoque(Produto dados, AppDbContext banco)
         {
-                var ProdutoExiste = banco.Produtos.Any(p => p.Nome == dados.Nome);
 
-            if(string.IsNullOrWhiteSpace(dados.Nome)) 
+            var contextoValidacao = new ValidationContext(dados);
+            var resultadoValidacao = new List<ValidationResult>();
+            bool dadosValidos = Validator.TryValidateObject(dados, contextoValidacao, resultadoValidacao, true);
+
+            if (!dadosValidos)
             {
-                Console.WriteLine($"[{DateTime.Now}] ERRO: O nome não pode estar vazio, identifique o produto que quer abastecer.");
-                return Results.BadRequest(new { mensagem = "Nome vazio" });
+                var erroMensagem = resultadoValidacao.FirstOrDefault()?.ErrorMessage;
+                Console.WriteLine($"[{DateTime.Now}] Dados inválido no cadastro. {erroMensagem}");
+                return Results.BadRequest(new { mensagem = erroMensagem });
             }
+            
+            var ProdutoExiste = banco.Produtos.Any(p => p.Nome == dados.Nome);
 
-            else if (dados.QuantidadeEmEstoque <= 0) 
+            if (dados.QuantidadeEmEstoque <= 0) 
                 {
                 Console.WriteLine($"[{DateTime.Now}] ERRO: Informe a quantidade de produtos que entraram no estoque.");
                 return Results.BadRequest(new { mensagem = "Informe a quantidade (ela não pode ser igual ou menor que zero" });
