@@ -267,5 +267,15 @@ namespace WarehouseAPI.Controllers
 
         }
 
+        public static IResult ListarProdutosPaginados(int pagina, int tamanho, AppDbContext banco)
+        {
+            var produtosPaginados = banco.Produtos
+                .Skip((pagina - 1) * tamanho)
+                .Take(tamanho)
+                .ToList();
+
+           return Results.Ok(produtosPaginados);
+        }
+
     }
 }
