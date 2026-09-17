@@ -284,5 +284,23 @@ namespace WarehouseAPI.Controllers
            return Results.Ok(produtosPaginados);
         }
 
+        public static IResult BuscarProdutoNome(string nomeProduto, AppDbContext banco)
+        {
+
+            if (string.IsNullOrWhiteSpace(nomeProduto)) 
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Escreva o nome do produto.");
+                return Results.BadRequest(new { mensagem = "A busca precisa conter um nome, ela está vazia." });
+            }
+
+            var pesquisa = banco.Produtos
+                .Where(p => p.Nome.Contains(nomeProduto))
+                .ToList();
+
+            return Results.Ok(pesquisa);
+
+        }
+
+
     }
 }
