@@ -44,5 +44,6 @@ app.MapGet("/produtos/lucro-total", EstoqueController.RelatorioLucro);
 app.MapPatch("/produtos/{id}/modificar-dados", EstoqueController.ModificarDadosProduto);
 app.MapGet("/produtos/paginar", EstoqueController.ListarProdutosPaginados);
 app.MapGet("/produtos/buscar", EstoqueController.BuscarProdutoNome);
+app.MapGet("/produtos/busca-por-fornecedor", EstoqueController.BuscarProdutoPorFornecedor);
 
 app.Run();

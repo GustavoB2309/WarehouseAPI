@@ -301,6 +301,21 @@ namespace WarehouseAPI.Controllers
 
         }
 
+        public static IResult BuscarProdutoPorFornecedor(int idfornecedor, AppDbContext banco)
+        {
+            if (idfornecedor <= 0)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: O id precisa ser maior que zero.");
+                return Results.BadRequest(new { mensagem = "O id precisa ser maior que zero." });
+            }
+
+            var pesquisaProduto = banco.Produtos
+                .Where(p => p.FornecedorId == idfornecedor)
+                .ToList();
+
+            return Results.Ok(pesquisaProduto);
+
+        }
 
     }
 }
