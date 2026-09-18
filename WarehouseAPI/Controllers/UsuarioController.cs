@@ -1,4 +1,6 @@
-﻿using WarehouseAPI.Data;
+﻿using Microsoft.AspNetCore.Connections.Features;
+using Microsoft.JSInterop;
+using WarehouseAPI.Data;
 using WarehouseAPI.Models;
 
 namespace WarehouseAPI.Controllers
@@ -24,6 +26,32 @@ namespace WarehouseAPI.Controllers
 
         }
 
+        public static IResult Login (Usuario loginDados, AppDbContext banco)
+        {
+            var processoLogin = banco.Usuarios.FirstOrDefault(u => u.Login == loginDados.Login);
+
+            if (processoLogin == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Dados incorretos.");
+                return Results.Unauthorized();
+            }
+
+            var senhadigitada = "HASH_" + loginDados.SenhaHash + "_SECRET_2026";
+
+            if (senhadigitada != processoLogin.SenhaHash)
+            {
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Senha incorreta.");
+                return Results.Unauthorized();
+            }
+
+            return Results.Ok(new
+            {
+                mensagem = "Login bem-sucedido!",
+                usuario = loginDados.Login,
+                cargo = processoLogin.Cargo,
+            });
+
+        }
 
     }
 }

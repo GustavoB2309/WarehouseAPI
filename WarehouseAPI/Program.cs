@@ -46,5 +46,6 @@ app.MapGet("/produtos/paginar", EstoqueController.ListarProdutosPaginados);
 app.MapGet("/produtos/buscar", EstoqueController.BuscarProdutoNome);
 app.MapGet("/produtos/busca-por-fornecedor", EstoqueController.BuscarProdutoPorFornecedor);
 app.MapPost("/usuarios/cadastrar", UsuarioController.CadastrarUsuario);
+app.MapPost("/usuarios/login", UsuarioController.Login);
 
 app.Run();
