@@ -2,6 +2,11 @@
 using Microsoft.JSInterop;
 using WarehouseAPI.Data;
 using WarehouseAPI.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 namespace WarehouseAPI.Controllers
 {
@@ -44,13 +49,38 @@ namespace WarehouseAPI.Controllers
                 return Results.Unauthorized();
             }
 
+            var tokenGerado = GerarTokenJwt(processoLogin);
+
             return Results.Ok(new
             {
                 mensagem = "Login bem-sucedido!",
-                usuario = loginDados.Login,
-                cargo = processoLogin.Cargo,
+                token = tokenGerado
             });
 
+        }
+
+        // PARTE TOTALMENTE COPIADA DA IA
+        private static string GerarTokenJwt(Usuario usuario)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var chaveSecretaBytes = Encoding.ASCII.GetBytes("Chave_Super_Secreta_E_Gigante_Do_Galpao_2026");
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Name, usuario.Login),
+            new Claim(ClaimTypes.Role, usuario.Cargo) 
+        }),
+                Expires = DateTime.UtcNow.AddHours(2), 
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(chaveSecretaBytes),
+                    SecurityAlgorithms.HmacSha256Signature
+                )
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
     }

@@ -6,6 +6,7 @@ using WarehouseAPI.Data;
 using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WarehouseAPI.Controllers
 {
@@ -208,6 +209,7 @@ namespace WarehouseAPI.Controllers
             return Results.Ok(resultadoFinal);
         }
 
+        [Authorize(Roles = "Gerente Master")]
         public static IResult deletarProduto(int id, AppDbContext banco)
         {
             var produtoexiste = banco.Produtos.FirstOrDefault(c => c.Id == id);

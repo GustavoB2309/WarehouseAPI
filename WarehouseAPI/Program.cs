@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using WarehouseAPI.Controllers;
 using WarehouseAPI.Data;
 
@@ -9,7 +10,31 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(connectionString));
 
+// Abaixo, copiado do site da Microsoft, primeira vez pesquisando um termo, lado da IA 
+
+builder.Services.AddAuthentication()
+.AddJwtBearer("some-scheme", jwtOptions =>
+{
+    jwtOptions.MetadataAddress = builder.Configuration["Api:MetadataAddress"];
+    // Optional if the MetadataAddress is specified
+    jwtOptions.Authority = builder.Configuration["Api:Authority"];
+    jwtOptions.Audience = builder.Configuration["Api:Audience"];
+    jwtOptions.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        ValidAudiences = builder.Configuration.GetSection("Api:ValidAudiences").Get<string[]>(),
+        ValidIssuers = builder.Configuration.GetSection("Api:ValidIssuers").Get<string[]>()
+    };
+
+    jwtOptions.MapInboundClaims = false;
+});
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -25,6 +50,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet("/", () => "A Warehouse API está rodando.");
 app.MapPost("/Abastecer", EstoqueController.AbastecerEstoque);
