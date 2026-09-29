@@ -185,6 +185,7 @@ namespace WarehouseAPI.Controllers
             return Results.Ok(new {relatorio});
         }
 
+        [Authorize (Roles = "gerente master")]
         public static IResult RelatorioCurvaABC(AppDbContext banco)
         {
             var produtosOrdenados = banco.Produtos
