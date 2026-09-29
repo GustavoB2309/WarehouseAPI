@@ -31,33 +31,44 @@ namespace WarehouseAPI.Controllers
 
         }
 
-        public static IResult Login (Usuario loginDados, AppDbContext banco)
+        // Abaixo, havia escrito o método no passo-a-passo com IA, mas depois de já termos feito, ela pediu para que colasse assim para que fosse mais auto-explicativo a leitores do código.
+
+        /// <summary>
+        /// Realiza a autenticação do usuário, valida as credenciais criptografadas e emite o Token JWT.
+        /// </summary>
+        public static IResult Login(Usuario loginDados, AppDbContext banco)
         {
+            // Validação de infraestrutura: Busca o usuário no banco de dados através do Login informado
             var processoLogin = banco.Usuarios.FirstOrDefault(u => u.Login == loginDados.Login);
 
             if (processoLogin == null)
             {
-                Console.WriteLine($"[{DateTime.Now}] ERRO: Dados incorretos.");
-                return Results.Unauthorized();
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Autenticação falhou. Usuário não encontrado.");
+                return Results.Unauthorized(); // HTTP 401: Não Autorizado
             }
 
+            // Geração do Hash: Aplica a regra de criptografia na senha enviada para comparação
             var senhadigitada = "HASH_" + loginDados.SenhaHash + "_SECRET_2026";
 
+            // Verificação de segurança: Compara o hash gerado com o hash armazenado na base de dados
             if (senhadigitada != processoLogin.SenhaHash)
             {
-                Console.WriteLine($"[{DateTime.Now}] ERRO: Senha incorreta.");
-                return Results.Unauthorized();
+                Console.WriteLine($"[{DateTime.Now}] ERRO: Autenticação falhou. Senha incorreta para o usuário: {processoLogin.Login}.");
+                return Results.Unauthorized(); // HTTP 401: Não Autorizado
             }
 
+            // Emissão da credencial: Gera o token de acesso estruturado com base nos dados do usuário
             var tokenGerado = GerarTokenJwt(processoLogin);
 
+            // Retorno da operação: Devolve o status de sucesso e o token de autenticação JWT
             return Results.Ok(new
             {
                 mensagem = "Login bem-sucedido!",
                 token = tokenGerado
             });
-
         }
+
+
 
         // PARTE TOTALMENTE COPIADA DA IA
         private static string GerarTokenJwt(Usuario usuario)

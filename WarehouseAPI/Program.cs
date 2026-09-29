@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WarehouseAPI.Controllers;
 using WarehouseAPI.Data;
 
@@ -8,42 +10,33 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString));
 
-// Abaixo, copiado do site da Microsoft, primeira vez pesquisando um termo, lado da IA 
-
-builder.Services.AddAuthentication()
-.AddJwtBearer("some-scheme", jwtOptions =>
+// 1. Primeiro registramos todos os serviços da central (no topo/meio)
+builder.Services.AddAuthentication(options =>
 {
-    jwtOptions.MetadataAddress = builder.Configuration["Api:MetadataAddress"];
-    // Optional if the MetadataAddress is specified
-    jwtOptions.Authority = builder.Configuration["Api:Authority"];
-    jwtOptions.Audience = builder.Configuration["Api:Audience"];
-    jwtOptions.TokenValidationParameters = new TokenValidationParameters
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
         ValidateIssuerSigningKey = true,
-        ValidAudiences = builder.Configuration.GetSection("Api:ValidAudiences").Get<string[]>(),
-        ValidIssuers = builder.Configuration.GetSection("Api:ValidIssuers").Get<string[]>()
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("Chave_Super_Secreta_E_Gigante_Do_Galpao_2026")),
+        ValidateIssuer = false,
+        ValidateAudience = false
     };
-
-    jwtOptions.MapInboundClaims = false;
 });
 
 builder.Services.AddAuthorization();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 2. 🧱 CONSTRÓI O APLICATIVO (Essa linha precisa existir e ficar aqui no meio!)
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var banco = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    banco.Database.EnsureCreated();
-}
-
+// 3. Depois de construído, ligamos os middlewares da portaria e as rotas
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -53,6 +46,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
+// (Suas rotas app.MapGet / app.MapDelete ficam aqui embaixo)
 app.MapGet("/", () => "A Warehouse API está rodando.");
 app.MapPost("/Abastecer", EstoqueController.AbastecerEstoque);
 app.MapPost("/fornecedores/cadastrar", FornecedorController.CadastrarFornecedor);
