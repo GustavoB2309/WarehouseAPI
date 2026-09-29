@@ -233,6 +233,7 @@ namespace WarehouseAPI.Controllers
             return Results.Ok("Produto removido com sucesso.");
         }
 
+        [Authorize (Roles = "gerente master")]
         public static IResult RelatorioLucro(AppDbContext banco)
         {
             var relatorio = banco.Produtos.Select(p => new
